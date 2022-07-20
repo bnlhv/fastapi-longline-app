@@ -10,7 +10,7 @@ router = APIRouter()
 @router.get(path="/", status_code=200)
 def root() -> Dict:
     """ Root app path """
-    return {"message": "Welcome!"}
+    return {"message": "Welcome to root path!"}
 
 
 app.include_router(router=router)
