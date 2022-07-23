@@ -2,6 +2,11 @@
 from enum import Enum
 
 
-class DBUtils(Enum):
-    MAX_CHARS_LENGTH = 50
-    MAX_CODES_LENGTH = 10
+class ModelSettings(Enum):
+    MAX_STR_LENGTH: int = 50
+    MAX_COD_LENGTH: int = 10
+
+
+class AppSettings(Enum):
+    DB_FILENAME: str = "database.db"
+    DB_PATH: str = f"sqlite:///database.db"

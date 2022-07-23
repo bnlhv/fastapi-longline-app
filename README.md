@@ -57,3 +57,10 @@ Chef --> MealCreator;
 Client --> ShoppingCart;
 ShoppingCart --> Item
 ```
+
+### How to start:  
+1. Clone this repo.
+2. Create virtual env and install requirements.  
+```pip install -r requirements.txt```
+3. Create dbs and apply migrations with alembic async.  
+```alembic upgrade head```

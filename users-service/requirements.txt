@@ -1,6 +1,9 @@
 fastapi
 uvicorn
-pydantic
-pydantic[email]
 python-multipart
-tortoise-orm[asyncpg]
+factory-boy
+SQLAlchemy
+sqlmodel
+pydantic[email]
+aiosqlite
+alembic

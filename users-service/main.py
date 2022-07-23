@@ -1,30 +1,27 @@
 from typing import Dict
 
-from fastapi import FastAPI
-from tortoise.contrib.fastapi import register_tortoise
+from fastapi import FastAPI, status
 
-from api.database import setup_db
-from api.routers import user_router
+from api.database import create_db_and_tables
+from api.routes.user import user_router
 
-app = FastAPI(title="Users Service API", root_path="/api/v1")
-setup_db()
-
-app.include_router(router=user_router)
+app = FastAPI(title="Users Service API")
 
 
-@app.get(path="/", status_code=200)
-def root() -> Dict:
+@app.on_event("startup")
+async def on_startup():
+    """ When this service startup do these operations. """
+    await create_db_and_tables()
+    print("Database Created.")
+
+
+@app.get(path="/", status_code=status.HTTP_200_OK)
+async def root() -> Dict:
     """ Root users-service path """
     return {"message": "Welcome to root path!"}
 
 
-register_tortoise(
-    app,
-    db_url="sqlite://db.sqlite3",
-    modules={"models": ["app.models"]},
-    generate_schemas=True,
-    add_exception_handlers=True,
-)
+app.include_router(router=user_router)
 
 if __name__ == '__main__':
     # debug purposes only
