@@ -3,20 +3,17 @@ from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
-from api.consts import ModelSettings
+from api.consts import settings
 
 
 class Location(SQLModel, table=True):
     """ Location model that describes where user lives """
     id: Optional[int] = Field(default=None, primary_key=True)
     home_number: str = Field(nullable=True)
-    street: str = Field(max_length=ModelSettings.MAX_STR_LENGTH.value)
-    city: str = Field(max_length=ModelSettings.MAX_STR_LENGTH.value)
-    country_code: str = Field(max_length=ModelSettings.MAX_COD_LENGTH.value)
-    postcode: str = Field(
-        index=True,
-        max_length=ModelSettings.MAX_COD_LENGTH.value
-    )
+    street: str = Field(max_length=settings.MAX_STR_LENGTH)
+    city: str = Field(max_length=settings.MAX_STR_LENGTH)
+    country_code: str = Field(max_length=settings.MAX_COD_LENGTH)
+    postcode: str = Field(index=True, max_length=settings.MAX_COD_LENGTH)
     # resident_id: Optional[int] = Field(
     #     default=None,
     #     foreign_key="user.id"

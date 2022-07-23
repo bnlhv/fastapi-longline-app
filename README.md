@@ -60,7 +60,7 @@ ShoppingCart --> Item
 
 ### How to start:  
 1. Clone this repo.
-2. Create virtual env and install requirements.  
-```pip install -r requirements.txt```
-3. Create dbs and apply migrations with alembic async.  
-```alembic upgrade head```
+2. Run the environment in docker containers.  
+```docker-compose up -d --build```
+3. If you change something in the models, make sure you instantiate a 
+migration file and migrate with alembic.  

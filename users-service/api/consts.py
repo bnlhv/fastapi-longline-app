@@ -1,12 +1,17 @@
 """ Module of all consts in this service """
-from enum import Enum
+from typing import Optional
+
+from pydantic import BaseSettings
 
 
-class ModelSettings(Enum):
+class Settings(BaseSettings):
+    API_V1_STR: str = "/api/v1"
+    DB_URI: Optional[str] = f"sqlite+aiosqlite:///database.db"
     MAX_STR_LENGTH: int = 50
     MAX_COD_LENGTH: int = 10
 
+    class Config:
+        case_sensitive = True
 
-class AppSettings(Enum):
-    DB_FILENAME: str = "database.db"
-    DB_PATH: str = f"sqlite:///database.db"
+
+settings = Settings()

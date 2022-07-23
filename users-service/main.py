@@ -1,11 +1,14 @@
 from typing import Dict
 
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, APIRouter
 
+from api.consts import settings
 from api.database import create_db_and_tables
 from api.routes.user import user_router
 
 app = FastAPI(title="Users Service API")
+
+root_router = APIRouter()
 
 
 @app.on_event("startup")
@@ -15,13 +18,14 @@ async def on_startup():
     print("Database Created.")
 
 
-@app.get(path="/", status_code=status.HTTP_200_OK)
+@root_router.get(path="/", status_code=status.HTTP_200_OK)
 async def root() -> Dict:
     """ Root users-service path """
     return {"message": "Welcome to root path!"}
 
 
-app.include_router(router=user_router)
+app.include_router(router=user_router, prefix=settings.API_V1_STR)
+app.include_router(router=root_router)
 
 if __name__ == '__main__':
     # debug purposes only

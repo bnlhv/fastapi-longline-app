@@ -3,16 +3,16 @@
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
-
-# don't delete this, this is for model instantiate (from api import models)
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-DB_PROTOCOL = "sqlite+aiosqlite:///"
-SQLITE_FILENAME = "users.db"
-DB_URL = DB_PROTOCOL + "/" + SQLITE_FILENAME
+from api.consts import settings
+
 connect_args = {"check_same_thread": False}
-engine = create_async_engine(url=DB_URL, future=True,
-                             connect_args=connect_args)
+engine = create_async_engine(
+    url=settings.DB_URI,
+    future=True,
+    connect_args=connect_args,
+)
 
 
 async def create_db_and_tables() -> None:

@@ -5,7 +5,7 @@ services:
     container_name: "users"
     build: ./users-service
     volumes:
-      - ./users.db:/app/api/users.db
+      - ./database.db:/app/api/database.db
       - ./users-service:/app
     ports:
       - "8001:8000"

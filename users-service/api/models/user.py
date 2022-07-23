@@ -6,11 +6,11 @@ from pydantic import EmailStr
 from sqlalchemy import String, Column
 from sqlmodel import Field, SQLModel
 
-from api.consts import ModelSettings
+from api.consts import settings
 
 
 class BaseUser(SQLModel):
-    full_name: str = Field(max_length=ModelSettings.MAX_STR_LENGTH.value)
+    full_name: str = Field(max_length=settings.MAX_STR_LENGTH)
     email: EmailStr = Field(sa_column=Column("email", String, unique=True))
 
     def __str__(self) -> str:
@@ -36,7 +36,5 @@ class UserCreate(BaseUser):
 
 class UserUpdate(SQLModel):
     """ User update pydantic model for validation """
-    full_name: Optional[str] = (
-        Field(max_length=ModelSettings.MAX_STR_LENGTH.value)
-    )
+    full_name: Optional[str] = Field(max_length=settings.MAX_STR_LENGTH)
     email: Optional[EmailStr]
