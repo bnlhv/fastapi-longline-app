@@ -2,7 +2,7 @@
 FROM python:3.9-alpine
 
 # Define where the app would go and live
-WORKDIR /app
+WORKDIR /src
 
 # Install python dependencies
 RUN pip install --upgrade pip

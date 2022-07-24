@@ -1,8 +1,8 @@
-"""added Users table
+"""first migration users
 
-Revision ID: a70a360392fd
+Revision ID: 60395994f177
 Revises: 
-Create Date: 2022-07-23 16:59:36.593693
+Create Date: 2022-07-24 11:31:58.866985
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = 'a70a360392fd'
+revision = '60395994f177'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,11 +31,14 @@ def upgrade() -> None:
     op.create_index(op.f('ix_location_postcode'), 'location', ['postcode'], unique=False)
     op.create_table('user',
     sa.Column('email', sa.String(), nullable=True),
+    sa.Column('hashed_password', sa.String(), nullable=True),
     sa.Column('full_name', sqlmodel.sql.sqltypes.AutoString(length=50), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('is_superuser', sa.Boolean(), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('hashed_password')
     )
     op.create_index(op.f('ix_user_id'), 'user', ['id'], unique=False)
     # ### end Alembic commands ###

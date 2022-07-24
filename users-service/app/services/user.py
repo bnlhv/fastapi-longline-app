@@ -1,15 +1,16 @@
 """ Module of all business logic layer """
-from typing import List, Optional, cast, Dict
+from typing import List, Optional, cast
 
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
-from api.models.user import User, UserUpdate, UserRead, UserCreate
+from app.models.user import User, UserUpdate, UserRead, UserCreate
+from app.utils.security import get_password_hash
 
 
-async def get_user_from_db(user_id: int, session: AsyncSession) -> User:
+async def get_user_from_db(user_id: int, session: AsyncSession) -> UserRead:
     """
     Get a specific User by id from the database.
 
@@ -21,7 +22,7 @@ async def get_user_from_db(user_id: int, session: AsyncSession) -> User:
     user = await session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return user
+    return UserRead(**user.dict())
 
 
 async def get_all_users(session: AsyncSession) -> List[UserRead]:
@@ -36,17 +37,20 @@ async def get_user(user_id: int, session: AsyncSession) -> Optional[UserRead]:
     return cast(UserRead, user)
 
 
-async def create_user(user: UserCreate, session: AsyncSession) -> UserRead:
+async def create_user(user_in: UserCreate, session: AsyncSession) -> UserRead:
     """
     Create a user model in the database.
 
-    :param user: The User object to create in the Databse.
+    :param user_in: The User object to create in the Databse.
     :param session: Database session object.
     :raises IntegrityError: If User's E-mail already exists in the Database.
     :return: User object.
     """
     try:
-        user = User.from_orm(user)
+        user_data = user_in.dict()
+        user_data.pop("password")
+        user = User(**user_data)
+        user.hashed_password = get_password_hash(user_in.password)
         session.add(user)
         await session.commit()
         await session.refresh(user)
@@ -61,19 +65,22 @@ async def update_user(
         session: AsyncSession
 ) -> UserRead:
     """ Update a specific User by id with optional fields """
-    user = await get_user_from_db(user_id, session)
+    user = await session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     user_data = user_data.dict(exclude_unset=True)
     for key, value in user_data.items():
         setattr(user, key, value)
     session.add(user)
     await session.commit()
     await session.refresh(user)
-    return cast(UserRead, user)
+    return UserRead(**user.dict())
 
 
 async def delete_user(user_id: int, session: AsyncSession) -> None:
     """ Get a specific User by id """
-    user = await get_user_from_db(user_id, session)
-    print(user)
+    user = await session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     await session.delete(user)
     await session.commit()

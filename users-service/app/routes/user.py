@@ -4,9 +4,9 @@ from typing import List
 from fastapi import APIRouter, status, Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from api.database import get_session
-from api.models.user import UserUpdate, UserRead, UserCreate
-from api.services import user as service
+from app.utils.dependencies import get_db_session
+from app.models.user import UserUpdate, UserRead, UserCreate
+from app.services import user as service
 
 user_router = APIRouter(prefix="/users")
 
@@ -17,7 +17,7 @@ user_router = APIRouter(prefix="/users")
     response_model=List[UserRead]
 )
 async def get_users(
-        session: AsyncSession = Depends(get_session),
+        session: AsyncSession = Depends(get_db_session),
 ) -> List[UserRead]:
     return await service.get_all_users(session)
 
@@ -29,9 +29,9 @@ async def get_users(
 )
 async def create_user(
         user: UserCreate,
-        session: AsyncSession = Depends(get_session),
+        session: AsyncSession = Depends(get_db_session),
 ) -> UserRead:
-    return await service.create_user(user=user, session=session)
+    return await service.create_user(user_in=user, session=session)
 
 
 @user_router.get(
@@ -41,7 +41,7 @@ async def create_user(
 )
 async def get_user(
         user_id: int,
-        session: AsyncSession = Depends(get_session),
+        session: AsyncSession = Depends(get_db_session),
 ) -> UserRead:
     return await service.get_user(user_id=user_id, session=session)
 
@@ -54,7 +54,7 @@ async def get_user(
 async def update_user(
         user_id: int,
         user: UserUpdate,
-        session: AsyncSession = Depends(get_session),
+        session: AsyncSession = Depends(get_db_session),
 ) -> UserRead:
     return await service.update_user(
         user_id=user_id,
@@ -69,6 +69,6 @@ async def update_user(
 )
 async def delete_user(
         user_id: int,
-        session: AsyncSession = Depends(get_session),
+        session: AsyncSession = Depends(get_db_session),
 ) -> None:
     return await service.delete_user(user_id=user_id, session=session)

@@ -2,9 +2,10 @@ from typing import Dict
 
 from fastapi import FastAPI, status, APIRouter
 
-from api.consts import settings
-from api.database import create_db_and_tables
-from api.routes.user import user_router
+from app.utils.consts import settings
+from app.utils.database import create_db_and_tables
+from app.routes.auth import auth_router
+from app.routes.user import user_router
 
 app = FastAPI(title="Users Service API")
 
@@ -25,6 +26,7 @@ async def root() -> Dict:
 
 
 app.include_router(router=user_router, prefix=settings.API_V1_STR)
+app.include_router(router=auth_router, prefix=settings.API_V1_STR)
 app.include_router(router=root_router)
 
 if __name__ == '__main__':

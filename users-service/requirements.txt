@@ -7,3 +7,12 @@ sqlmodel
 pydantic[email]
 aiosqlite
 alembic
+passlib
+bcrypt
+python-jose[cryptography]
+pytest
+pytest-asyncio
+anyio
+httpx
+requests
+trio

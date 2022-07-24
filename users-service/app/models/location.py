@@ -3,7 +3,7 @@ from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
-from api.consts import settings
+from app.utils.consts import settings
 
 
 class Location(SQLModel, table=True):

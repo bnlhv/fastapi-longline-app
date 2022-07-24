@@ -62,5 +62,5 @@ ShoppingCart --> Item
 1. Clone this repo.
 2. Run the environment in docker containers.  
 ```docker-compose up -d --build```
-3. If you change something in the models, make sure you instantiate a 
-migration file and migrate with alembic.  
+3. Go inside the containers and upgrade the migrations.  
+```alembic upgrade head```

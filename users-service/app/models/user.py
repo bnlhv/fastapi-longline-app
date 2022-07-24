@@ -6,12 +6,14 @@ from pydantic import EmailStr
 from sqlalchemy import String, Column
 from sqlmodel import Field, SQLModel
 
-from api.consts import settings
+from app.utils.consts import settings
 
 
 class BaseUser(SQLModel):
     full_name: str = Field(max_length=settings.MAX_STR_LENGTH)
     email: EmailStr = Field(sa_column=Column("email", String, unique=True))
+    created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    is_superuser: bool = Field(default=False)
 
     def __str__(self) -> str:
         """ :returns: Override str of model and return user name. """
@@ -21,17 +23,19 @@ class BaseUser(SQLModel):
 class User(BaseUser, table=True):
     """ General User in the application """
     id: Optional[int] = Field(default=None, index=True, primary_key=True)
-    created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    hashed_password: Optional[str] = (
+        Field(sa_column=Column("hashed_password", String, unique=True))
+    )
 
 
-class UserRead(User):
+class UserRead(BaseUser):
     """ Class for User read from DB, for validation purposes """
-    pass
+    id: int
 
 
 class UserCreate(BaseUser):
     """ Class for User creation for validation purposes """
-    pass
+    password: str
 
 
 class UserUpdate(SQLModel):
